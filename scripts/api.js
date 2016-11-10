@@ -1,6 +1,6 @@
 'use strict';
 
-const baseURL = "http://overseer.casimir-lab.net"
+const baseURL = "https://overseer.casimir-lab.net"
 
 function updateContent() {
     navigator.geolocation.getCurrentPosition(function(position) {
