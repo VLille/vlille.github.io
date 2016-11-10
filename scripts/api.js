@@ -14,7 +14,9 @@ function updateContent() {
                 filter: "bike"
             }
         }).then(function(response) {
-              app.content = response.data;
+            var station = response.data[0];
+            app.distance = station.Distance
+            app.station = station.Station;
         }).catch(function(error) {
               console.log(error);
         });
@@ -39,9 +41,8 @@ function updateContent() {
 var app = new Vue({
     el: '#app',
     data: {
-        content: 'Récupération des données en cours...',
-        latitude: 0.0,
-        longitude: 0.0,
+        distance: '',
+        station: '',
     },
     ready: updateContent(),
 });
