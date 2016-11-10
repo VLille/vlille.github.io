@@ -7,7 +7,7 @@ function updateContent() {
         app.latitude = position.coords.latitude;
         app.longitude = position.coords.longitude;
 
-        var url = baseURL + "/" + near + "/" + parseFloat(app.latitude) + "/" + parseFloat(app.longitude);
+        var url = baseURL + "/near/" + parseFloat(app.latitude) + "/" + parseFloat(app.longitude);
         axios.get(url, {
             params: {
                 n: 1,
