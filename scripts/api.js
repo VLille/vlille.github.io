@@ -1,24 +1,27 @@
 'use strict';
 
-const baseURL = "https://overseer.casimir-lab.net"
+function api(uri, cb) {
+    var url = "https://overseer.casimir-lab.net/" + uri;
+    var method = 'GET';
+    var req = new XMLHttpRequest();
+    req.onerror = function() { console.log("Request failed"); };
+    req.onload = function () {
+        var data = JSON.parse(req.responseText);
+        cb(data);
+    };
+    req.open('GET', url);
+    req.send();
+}
 
 function updateContent() {
     navigator.geolocation.getCurrentPosition(function(position) {
-        app.latitude = position.coords.latitude;
-        app.longitude = position.coords.longitude;
-
-        var url = baseURL + "/near/" + parseFloat(app.latitude) + "/" + parseFloat(app.longitude);
-        axios.get(url, {
-            params: {
-                n: 1,
-                filter: "bike"
-            }
-        }).then(function(response) {
-            var station = response.data[0];
-            app.distance = station.Distance
-            app.station = station.Station;
-        }).catch(function(error) {
-              console.log(error);
+        var latitude = parseFloat(position.coords.latitude);
+        var longitude = parseFloat(position.coords.longitude);
+        api("near/" + latitude + "/" + longitude + "?n=1&filter=bike", function(data) {
+            var data = data[0];
+            var station = data.Station
+            var distance = parseInt(data.Distance) + "m";
+            app.now.message = station.Name + " (" + distance + ") : 🚲 " + station.Bikes + ", 🅿 " + station.Slots
         });
     }, function showError(error) {
 	switch(error.code) {
@@ -41,8 +44,9 @@ function updateContent() {
 var app = new Vue({
     el: '#app',
     data: {
-        distance: '',
-        station: '',
+        now: {
+            message: "Récupération de la position GPS...",
+        },
     },
     ready: updateContent(),
 });
