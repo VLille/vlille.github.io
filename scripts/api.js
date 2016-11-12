@@ -19,9 +19,9 @@ function updateContent() {
         var longitude = parseFloat(position.coords.longitude);
         api("near/" + latitude + "/" + longitude + "?n=1&filter=bike", function(data) {
             var data = data[0];
-            var station = data.Station
-            var distance = parseInt(data.Distance) + "m";
-            app.now.message = station.Name + " (" + distance + ") : 🚲 " + station.Bikes + ", 🅿 " + station.Slots
+            var station = data.station
+            var distance = parseInt(data.distance) + "m";
+            app.now.message = station.name + " (" + distance + ") : 🚲 " + station.bikes + ", 🅿 " + station.slots
         });
     }, function showError(error) {
 	switch(error.code) {
