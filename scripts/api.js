@@ -17,10 +17,9 @@ function updateContent() {
     navigator.geolocation.getCurrentPosition(function(position) {
         var latitude = parseFloat(position.coords.latitude);
         var longitude = parseFloat(position.coords.longitude);
-        api("near/" + latitude + "/" + longitude + "?n=1&filter=bike", function(data) {
-            var data = data[0];
-            var station = data.station
-            var distance = parseInt(data.distance) + "m";
+        api("now/@" + latitude + "," + longitude, function(data) {
+            var station = data.bike.station
+            var distance = parseInt(data.bike.distance) + "m";
             app.now.message = station.name + " (" + distance + ") : 🚲 " + station.bikes + ", 🅿 " + station.slots
         });
     }, function showError(error) {
