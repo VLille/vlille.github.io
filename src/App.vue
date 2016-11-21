@@ -1,15 +1,20 @@
+
+
 <template>
-    <div id="app">
-        <p>{{ now.message }}</p>
-    </div>
+
+<div id="app">
+    <p>{{ now.message }}</p>
+</div>
+
 </template>
 
 <script>
+
 function api(uri, cb) {
     var url = "https://overseer.casimir-lab.net/" + uri;
     var req = new XMLHttpRequest();
     req.open('GET', url);
-    req.onload = function () {
+    req.onload = function() {
         var data = JSON.parse(req.responseText);
         cb(data);
     };
@@ -37,7 +42,7 @@ function formatNow(now) {
 
 export default {
     name: 'app',
-    data () {
+    data() {
         return {
             now: {
                 message: "Récupération de la position GPS...",
@@ -60,22 +65,25 @@ export default {
                     self.now.message = formatNow(data);
                 });
             }, function showError(error) {
-        	switch(error.code) {
-        		case error.PERMISSION_DENIED:
-        			alert("User denied the request for Geolocation.");
-        			break;
-        		case error.POSITION_UNAVAILABLE:
-        			alert("Location information is unavailable.");
-        			break;
-        		case error.TIMEOUT:
-        			alert("The request to get user location timed out.");
-        			break;
-        		case error.UNKNOWN_ERROR:
-        			alert("An unknown error occurred.");
-        			break;
-        	}
-            }, {enableHighAccuracy: true});
+                switch (error.code) {
+                    case error.PERMISSION_DENIED:
+                        alert("User denied the request for Geolocation.");
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        alert("Location information is unavailable.");
+                        break;
+                    case error.TIMEOUT:
+                        alert("The request to get user location timed out.");
+                        break;
+                    case error.UNKNOWN_ERROR:
+                        alert("An unknown error occurred.");
+                        break;
+                }
+            }, {
+                enableHighAccuracy: true
+            });
         }
     }
 }
+
 </script>
