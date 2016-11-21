@@ -3,7 +3,7 @@
 <template>
 
 <div id="app">
-    <p>{{ now.message }}</p>
+    <p v-html="now.message"></p>
 </div>
 
 </template>
@@ -32,10 +32,10 @@ function formatStation(station, distance) {
 function formatNow(now) {
     var message = formatStation(now.bike.station, now.bike.distance);
     if (now.bike.station.id != now.ticket.station.id) {
-        message += "\n" + formatStation(now.ticket.station, now.ticket.distance);
+        message += "<br />" + formatStation(now.ticket.station, now.ticket.distance);
     }
     if (now.bike.station.id != now.slot.station.id) {
-        message += "\n" + formatStation(now.slot.station, now.slot.distance);
+        message += "<br />" + formatStation(now.slot.station, now.slot.distance);
     }
     return message;
 }
