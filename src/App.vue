@@ -1,5 +1,10 @@
-'use strict';
+<template>
+    <div id="app">
+        <p>{{ now.message }}</p>
+    </div>
+</template>
 
+<script>
 function api(uri, cb) {
     var url = "https://overseer.casimir-lab.net/" + uri;
     var req = new XMLHttpRequest();
@@ -11,12 +16,33 @@ function api(uri, cb) {
     req.send();
 }
 
-new Vue({
-    el: '#app',
-    data: {
-        now: {
-            message: "Récupération de la position GPS...",
-        },
+function formatStation(station, distance) {
+    var distanceInfo = "";
+    if (distance) {
+        distanceInfo = " (" + parseInt(distance) + "m)";
+    }
+    return station.name + distanceInfo + " : 🚲 " + station.bikes + ", 🅿 " + station.slots + (station.sells_tickets ? ", 💳" : "");
+}
+
+function formatNow(now) {
+    var message = formatStation(now.bike.station, now.bike.distance);
+    if (now.bike.station.id != now.ticket.station.id) {
+        message += "\n" + formatStation(now.ticket.station, now.ticket.distance);
+    }
+    if (now.bike.station.id != now.slot.station.id) {
+        message += "\n" + formatStation(now.slot.station, now.slot.distance);
+    }
+    return message;
+}
+
+export default {
+    name: 'app',
+    data () {
+        return {
+            now: {
+                message: "Récupération de la position GPS...",
+            },
+        }
     },
     created: function() {
         this.fetchNowData();
@@ -31,7 +57,7 @@ new Vue({
                     var station = data.bike.station;
                     var distance = parseInt(data.bike.distance) + "m";
                     self.now = data;
-                    self.now.message = station.name + " (" + distance + ") : 🚲 " + station.bikes + ", 🅿 " + station.slots;
+                    self.now.message = formatNow(data);
                 });
             }, function showError(error) {
         	switch(error.code) {
@@ -51,4 +77,5 @@ new Vue({
             }, {enableHighAccuracy: true});
         }
     }
-});
+}
+</script>
