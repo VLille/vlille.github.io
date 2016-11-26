@@ -1,14 +1,16 @@
-
-
 <template>
-
 <div id="app">
-    <p v-html="now.message"></p>
+    <div v-if="!position">Récupération de la position GPS...</div>
+    <div id="now" v-if="now">
+        <station-summary v-bind:station="now.bike.station" v-bind:distance="now.bike.distance"></station-summary>
+        <station-summary v-if="now.bike.station.id != now.ticket.station.id" v-bind:station="now.ticket.station" v-bind:distance="now.ticket.distance"></station-summary>
+        <station-summary v-if="now.bike.station.id != now.slot.station.id" v-bind:station="now.slot.station" v-bind:distance="now.slot.distance"></station-summary>
+    </div>
 </div>
-
 </template>
 
 <script>
+import StationSummary from './components/StationSummary.vue'
 
 function api(uri, cb) {
     var url = "https://overseer.casimir-lab.net/" + uri;
@@ -21,32 +23,15 @@ function api(uri, cb) {
     req.send();
 }
 
-function formatStation(station, distance) {
-    var distanceInfo = "";
-    if (distance) {
-        distanceInfo = " (" + parseInt(distance) + "m)";
-    }
-    return station.name + distanceInfo + " : 🚲 " + station.bikes + ", 🅿 " + station.slots + (station.sells_tickets ? ", 💳" : "");
-}
-
-function formatNow(now) {
-    var message = formatStation(now.bike.station, now.bike.distance);
-    if (now.bike.station.id != now.ticket.station.id) {
-        message += "<br />" + formatStation(now.ticket.station, now.ticket.distance);
-    }
-    if (now.bike.station.id != now.slot.station.id) {
-        message += "<br />" + formatStation(now.slot.station, now.slot.distance);
-    }
-    return message;
-}
-
 export default {
     name: 'app',
+    components: {
+        'station-summary': StationSummary,
+    },
     data() {
         return {
-            now: {
-                message: "Récupération de la position GPS...",
-            },
+            position: null,
+            now: null,
         }
     },
     created: function() {
@@ -56,13 +41,11 @@ export default {
         fetchNowData: function() {
             var self = this;
             navigator.geolocation.getCurrentPosition(function(position) {
+                self.position = position;
                 var latitude = parseFloat(position.coords.latitude);
                 var longitude = parseFloat(position.coords.longitude);
                 api("now/@" + latitude + "," + longitude, function(data) {
-                    var station = data.bike.station;
-                    var distance = parseInt(data.bike.distance) + "m";
                     self.now = data;
-                    self.now.message = formatNow(data);
                 });
             }, function showError(error) {
                 switch (error.code) {
@@ -85,5 +68,4 @@ export default {
         }
     }
 }
-
 </script>
