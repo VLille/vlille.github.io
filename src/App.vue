@@ -4,7 +4,7 @@
     <div id="now" v-if="now">
         <station-summary v-bind:station="now.bike.station" v-bind:distance="now.bike.distance"></station-summary>
         <station-summary v-if="now.bike.station.id != now.ticket.station.id" v-bind:station="now.ticket.station" v-bind:distance="now.ticket.distance"></station-summary>
-        <station-summary v-if="now.bike.station.id != now.slot.station.id" v-bind:station="now.slot.station" v-bind:distance="now.slot.distance"></station-summary>
+        <station-summary v-if="now.bike.station.id != now.slot.station.id && now.ticket.station.id != now.slot.station.id" v-bind:station="now.slot.station" v-bind:distance="now.slot.distance"></station-summary>
     </div>
 </div>
 </template>
