@@ -9,7 +9,11 @@ export default {
     props: ['station', 'distance'],
     computed: {
         meters() {
-            return parseInt(this.distance) + "m"
+            var d = parseFloat(this.distance);
+            if (d < 1000) {
+                return d.toFixed(0) + " m";
+            }
+            return (d / 1000).toFixed(1) + " km";
         }
     }
 }
